@@ -53,3 +53,40 @@
 #title-suggestions {
     display: none;
 }
+
+
+
+#spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #17a2b8;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    z-index: 10000;
+    
+}
+
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+} 
+
+#generate-btn-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}

@@ -16,6 +16,22 @@ if($data["action"] === "register_book") {
     // make controls 
     // not input fieds not empty ...
     // reference who respect rules
+    if(strlen($data["id_book"]) < 7 || strlen($data["title"]) <=  1 || strlen($data["author"]) <= 1) {
+        echo json_encode([
+            "state" => false,
+            "message" => "Un champ envoyé est trop court",
+            "debug" => [strlen($data["id_book"]) < 7, strlen($data["title"]) <=  1, strlen($data["author"]) <= 1]
+        ]);
+        exit;
+    }
+
+    // control correct book_id format
+        // 2 first letters of author, 2 first letters of title + 4 digits
+
+    // $autorCode = $data["bookId"];
+
+
+
 
 
     $query = $dbCo->prepare("SELECT reference FROM livre WHERE reference = :id_book");

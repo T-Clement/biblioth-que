@@ -81,32 +81,38 @@
 				</ul>
 			</div>
 			<div id="toast"></div>
-            <div class="card">
+            <div class="card my-3">
                 <div class="card-header">
 				<legend>Ajouter un nouveau livre</legend>
 				<form id="add-book-form">
 					<div>
-						<label for="api-activation">Activer la recherche avec API</label>
+						<label for="api-activation">Activer la recherche de titre de livre avec API</label>
 						<input type="checkbox" name="api-activation" id="api-activation"/>
 					</div>
-					<div>
+					<div class="form-group">
 						<label for="title">Titre du livre</label>
-						<input type="text" id="title" name="title" value=""/>
-						<ul id="title-suggestions">
+						<input class="form-control" type="text" id="title" name="title" value="" required/>
+						<ul id="title-suggestions" class="list-group">
+							<!-- <li id="spinner"><span class="loader"></span></li> -->
 							<!-- data added here in JS -->
 						</ul>
 					</div>
-					<div>
+					<div class="form-group">
 						<label for="author">Auteur du livre</label>
-						<input type="text" id="author" name="author" value=""/>
+						<input class="form-control" type="text" id="author" name="author" value="" required/>
+					</div>
+					
+					<div class="form-row">
+						<div class="form-group col-md-10">
+							<label for="book_id">Référence du livre</label>
+							<input class="form-control" type="text" id="book_id" name="book_id" value="" readonly required/>
+						</div>
+						<div id="generate-btn-wrapper" class="form-group col-md-2">
+							<button class="btn btn-info" id="generate-code-button">Générer</button>
+						</div>
 					</div>
 					<div>
-						<label for="book_id">Référence du livre</label>
-						<input type="text" id="book_id" name="book_id" value="" readonly required/>
-						<button id="generate-code-button">Générer</button>
-					</div>
-					<div>
-						<input class="primary" type="submit" value="Enregistrer le livre">
+						<input class="btn btn-primary" type="submit" value="Enregistrer le livre">
 					</div>
 				</form>
 				</div>

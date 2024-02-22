@@ -52,11 +52,8 @@ if($data["action"] === "register_book") {
     // close request
     $query->closeCursor();
 
-
-    // 
-
-
-
+    // ----------------------------------------------------------
+    // ----------------------------------------------------------
 
     // insert book in database query
     $insert_query = $dbCo->prepare("INSERT INTO livre (reference, titre, auteur) VALUES (:id_book, :title, :author)");
@@ -76,6 +73,40 @@ if($data["action"] === "register_book") {
 
 
 
+
+}
+
+
+
+if($data["action"] === "check_book_reference") {
+    $query = $dbCo->prepare("SELECT reference FROM livre WHERE reference LIKE CONCAT( '%', :code, '%')");
+    $isOk = $query->execute([
+        "code" => $data["reference"]
+    ]);
+    $result = $query->fetchAll();
+    
+    echo json_encode([
+        "data" => $result,
+    ]);
+    $query->closeCursor();
+    exit;
+
+}
+
+
+if($data["action"] === "get_database_book_data") {
+    $query = $dbCo->prepare("SELECT * FROM livre WHERE reference = :reference");
+    $isOk = $query->execute([
+        "reference" => $data["reference"]
+    ]);
+
+    $result = $query->fetch();
+
+    echo json_encode([
+        "data" => $result
+    ]);
+    $query->closeCursor();
+    exit;
 
 }
 

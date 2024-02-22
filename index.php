@@ -120,7 +120,24 @@
 		    <div class="card">
                 <div class="card-header">
 				<legend>Vérifier l'existence d’un livre</legend>
-				<form>
+				<form id="search-book-form">
+					<div class="form-group">
+						<label for="search">Référence du livre :</label>
+						<input id="search" type="text" class="form-control" value="" placeholder="">
+					</div>
+
+					<article>
+						<h4>Correspondances :</h2>
+						<ul id="search-results" class="list-group">
+							<li class="list-group-item">Aucune correspondance</li>
+						</ul>
+						<h4>Données :</h4>
+						<ul class='list-group'>
+							<li class='list-group-item'>Référence : <span id="book-reference"></span></li>
+							<li class='list-group-item'>Auteur : <span id="book-author"></span></li>
+							<li class='list-group-item'>Titre : <span id="book-title"></span></li>
+						</ul>
+					</article>
 				</form>
 			</div>
 			<script src="script.js"></script>

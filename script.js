@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", function () {
 			return;
 		}
 
-		console.log("C'est plus grand que 3");
 
 
 
@@ -53,8 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			if (e.target.value.length < 3) return;
 			titleSuggestions.innerHTML = "<li id='spinner' class='list-group-item'><span id='loader'></span></li>";
 
-			// addAuthorBookInput.value = "";
-			// bookIdInput.value = "";
+			
 
 			getTitlesFromApi(e.target.value).then((response) => {
 				// remove loading spinner
@@ -85,8 +83,8 @@ document.addEventListener("DOMContentLoaded", function () {
 					titleSuggestions.appendChild(li);
 				}); // END OF FOREACH
 			}); // END OF GET TITLE FROM API
-		}, 500 ); //  END OF TIME OUT
-	});
+		}, 500); //  END OF TIME OUT
+	}); // END OF KEYUP EVENT LISTENER
 
 
     // ------------------------------------------------------
@@ -94,13 +92,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const addBookForm = document.getElementById("add-book-form");
     addBookForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        console.log("Form soumis");
+
         let formData = new FormData(addBookForm);
 
         const title = formData.get("title");
         const author = formData.get("author");
         const bookId = formData.get("book_id");
-		console.log(bookId);
+
 		if(bookId.length < 7 || bookId === null) {
 			showToast("Vous devez générer une référence de livre en cliquant sur le bouton Générer" , false);
 			return
@@ -108,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // IF NO ISSUE
         registerBookToDatabase(bookId, author, title).then((response) => {
-            console.log(response);
+            // console.log(response);
 
             if (!response.state) {
                 // display hint about error for user
@@ -141,21 +139,17 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        if (
-            addAuthorBookInput.value === "" ||
-            addAuthorBookInput.value.length < 2
-        ) {
+        if (addAuthorBookInput.value === "" || addAuthorBookInput.value.length < 2) {
             showToast("Nom d'auteur trop court pour être enregistré", false);
             addAuthorBookInput.focus();
             return;
         }
 
-        bookIdInput.value = generateUniqBookId(
-            addTitleBookInput,
-            addAuthorBookInput
-        );
+        bookIdInput.value = generateUniqBookId(addTitleBookInput, addAuthorBookInput);
     }); // END OFF GENERATE REFERENCE
 
+
+	// -------------------------------------------------------
 	// remove list when api activation has been desactivated
 	document.getElementById("api-activation").addEventListener("click", function(e){
 		// console.log("c'est cliqué");
@@ -165,9 +159,68 @@ document.addEventListener("DOMContentLoaded", function () {
 	}); // END OFF API CHECK CLICK 
 
 
+	// -------------------------------------------------------------------
+	// -------------------------------------------------------------------
+	// CHECK BOOK REFERENCE IN DATABASE
+	// -------------------------------------------------------------------
+	// -------------------------------------------------------------------
+
+	document.getElementById("search").addEventListener("keyup", e => {
+		e.preventDefault();
+
+		// reset results from previous query
+		document.getElementById("search-results").innerHTML = "";
+		document.getElementById("book-reference").innerText = "";
+		document.getElementById("book-author").innerText = "";
+		document.getElementById("book-title").innerText ="";
+		
+		if(e.target.value === "") return;
+
+		// check in database the references of books related to input value
+		checkBookReferenceInDataBase(e.target.value).then((response) => {
+			// console.log(response.data);
+
+			
+			// if no match 
+			if(response.data.length === 0) {
+				const li = document.createElement("li");
+				li.classList.add("list-group-item", "list-group-item-action");
+				li.textContent = "Aucune correspondance";
+				
+				// append li to search-results list
+				document.getElementById("search-results").appendChild(li);
+				return;
+			} else {
+				// loop thrue each result
+				response.data.forEach(book => {
+					
+					const li = document.createElement("li");
+					li.classList.add("list-group-item", "list-group-item-action");
+					li.textContent = book.reference;
+	
+	
+					// fetch Book data from database when click on list-item
+					li.addEventListener("click", function(e) {
+						getBookDetails(book.reference).then(response => {
+							document.getElementById("book-reference").innerText = response.data.reference;
+							document.getElementById("book-author").innerText = response.data.auteur;
+							document.getElementById("book-title").innerText = response.data.titre;
+	
+						});
+					});
+	
+					// append li to search-results list
+					document.getElementById("search-results").appendChild(li);
+				}) // END OF FOREACH
+
+			} // END OF IF/ELSE STATEMENT ABOUT MATCH IN DATABASE
+
+		}); // END OF CHECK BOOK REFERENCE IN DATABASE
+
+	}); // END OF KEYUP EVENT LISTENER
 
 
-}); // END OF DOMCONTENTLOADED LISTENER
+}); // END OF DOMCONTENTLOADED EVENT LISTENER
 
 // ------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------
@@ -180,6 +233,37 @@ document.addEventListener("DOMContentLoaded", function () {
 // ---------------- FUNCTIONS ------------------ //
 // -------------------------------------------- //
 // -------------------------------------------- //
+
+function getBookDetails(reference) {
+	const data = {
+		"action": "get_database_book_data",
+		"reference": reference
+	};
+	return callAPI("POST", data);
+}
+
+
+function checkBookReferenceInDataBase(code) {
+	const data = {
+		"action": "check_book_reference",
+		"reference": code
+	};
+
+	return callAPI("POST", data);
+}
+
+
+function registerBookToDatabase(bookId, bookAuthor, bookTitle) {
+	const data = {
+		action: "register_book",
+		id_book: bookId,
+		author: bookAuthor,
+		title: bookTitle,
+	};
+
+	return callAPI("POST", data);
+}
+
 
 async function callAPI(method, data) {
     try {
@@ -196,10 +280,12 @@ async function callAPI(method, data) {
     }
 }
 
+
+
 async function getTitlesFromApi(string) {
     try {
         const response = await fetch(
-            `https://openlibrary.org/search.json?title=${string}&lang=fr&limit=20`
+            `https://openlibrary.org/search.json?title=${string}&language=fre&limit=20`
         );
         // const response = await fetch(`https://openlibrary.org/search/authors.json?q=${string}`);
         return response.json();
@@ -207,6 +293,9 @@ async function getTitlesFromApi(string) {
         console.error("Unable to fetch datas from API : " + error);
     }
 }
+
+
+
 
 function generateUniqBookId(titleInput, authorInput) {
     document.getElementById("book_id").value = "";
@@ -231,16 +320,12 @@ function generateUniqBookId(titleInput, authorInput) {
     );
 }
 
-function registerBookToDatabase(bookId, bookAuthor, bookTitle) {
-    const data = {
-        action: "register_book",
-        id_book: bookId,
-        author: bookAuthor,
-        title: bookTitle,
-    };
 
-    return callAPI("POST", data);
-}
+
+
+
+
+
 
 function showToast(message, state) {
     var x = document.getElementById("toast");
@@ -255,4 +340,3 @@ function showToast(message, state) {
     }, 3000);
 }
 
-// vider l'input référence à chaque click sur générer

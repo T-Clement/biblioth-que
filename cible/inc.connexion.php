@@ -1,7 +1,7 @@
 <?php
-	// Param�tres de connexion � la base de donn�es
+	// Paramètres de connexion à la base de données
 
-	require 'vendor/autoload.php'; #load les dependances de vendor
+	require '../vendor/autoload.php'; #require and load require dependencies
 
 	$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 	$dotenv->load();
@@ -21,5 +21,5 @@
 		' . $e->getMessage());
 	}
 
-	var_dump($dbCo);
+	// var_dump($dbCo);
 ?>

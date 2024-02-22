@@ -1,4 +1,3 @@
-<?php require_once 'cible/inc.connexion.php'; ?>
 
 <!DOCTYPE HTML>
 <html lang="fr">
@@ -10,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link href="assets/style.css" rel="stylesheet">
+	<link rel="stylesheet" href="assets/custom.css">
 </head>
 <body>
 	<div class="bg-img1 size1 flex-w flex-c-m p-t-20 p-b-55 p-l-15 p-r-15">
@@ -80,10 +80,34 @@
 					</li>
 				</ul>
 			</div>
+			<div id="toast"></div>
             <div class="card">
                 <div class="card-header">
 				<legend>Ajouter un nouveau livre</legend>
-				<form>
+				<form id="add-book-form">
+					<div>
+						<label for="api-activation">Activer la recherche avec API</label>
+						<input type="checkbox" name="api-activation" id="api-activation"/>
+					</div>
+					<div>
+						<label for="title">Titre du livre</label>
+						<input type="text" id="title" name="title" value=""/>
+						<ul id="title-suggestions">
+							<!-- data added here in JS -->
+						</ul>
+					</div>
+					<div>
+						<label for="author">Auteur du livre</label>
+						<input type="text" id="author" name="author" value=""/>
+					</div>
+					<div>
+						<label for="book_id">Référence du livre</label>
+						<input type="text" id="book_id" name="book_id" value="" readonly required/>
+						<button id="generate-code-button">Générer</button>
+					</div>
+					<div>
+						<input class="primary" type="submit" value="Enregistrer le livre">
+					</div>
 				</form>
 				</div>
 			</div>

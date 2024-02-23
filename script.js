@@ -295,8 +295,6 @@ async function getTitlesFromApi(string) {
 }
 
 
-
-
 function generateUniqBookId(titleInput, authorInput) {
     document.getElementById("book_id").value = "";
     const regex = /[\W]/g;
@@ -319,11 +317,6 @@ function generateUniqBookId(titleInput, authorInput) {
         (authorCode + titleCode + randomFourDigitsNumber).toUpperCase()
     );
 }
-
-
-
-
-
 
 
 

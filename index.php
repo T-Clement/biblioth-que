@@ -80,7 +80,9 @@
 					</li>
 				</ul>
 			</div>
+
 			<div id="toast"></div>
+			
             <div class="card my-3">
                 <div class="card-header">
 				<legend>Ajouter un nouveau livre</legend>
